@@ -1,4 +1,4 @@
-package com.uet.longhoanglekim.authservice;
+package com.uet.longhoanglekim.authservice.repository;
 
 import com.uet.longhoanglekim.authservice.constant.Provider;
 import com.uet.longhoanglekim.authservice.model.User;

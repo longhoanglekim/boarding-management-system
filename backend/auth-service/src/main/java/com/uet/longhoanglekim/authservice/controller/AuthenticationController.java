@@ -7,10 +7,7 @@ import com.uet.longhoanglekim.authservice.dto.RegisterInput;
 import com.uet.longhoanglekim.authservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -30,5 +27,10 @@ public class AuthenticationController {
     @PostMapping("/login-with-oauth2")
     public ApiResponse<?> loginWithOauth2(@RequestBody OAuthRequest oAuthRequest) {
         return ApiResponse.success(authService.loginWithOauth(oAuthRequest), "Đăng nhập qua oauth2 thành công");
+    }
+
+    @PatchMapping("/verify-email/{id}")
+    public ApiResponse<?> verifyEmail(@PathVariable long id) {
+        return ApiResponse.success(authService.verifyEmail(id), "Đăng nhập thành công");
     }
 }

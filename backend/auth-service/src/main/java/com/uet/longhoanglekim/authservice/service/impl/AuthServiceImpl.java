@@ -1,6 +1,7 @@
 package com.uet.longhoanglekim.authservice.service.impl;
 
-import com.uet.longhoanglekim.authservice.UserRepository;
+import com.uet.longhoanglekim.authservice.message.RegisterMessage;
+import com.uet.longhoanglekim.authservice.repository.UserRepository;
 import com.uet.longhoanglekim.authservice.constant.ErrorCode;
 import com.uet.longhoanglekim.authservice.constant.Provider;
 import com.uet.longhoanglekim.authservice.dto.*;
@@ -10,6 +11,7 @@ import com.uet.longhoanglekim.authservice.service.AuthService;
 import com.uet.longhoanglekim.authservice.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -26,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final RestTemplate restTemplate;
+    private final KafkaTemplate<String, RegisterMessage> registerKafkaTemplate;
     @Override
     public RegisterResponse signup( RegisterInput input) {
         Optional<User> existingOpt = userRepository.findByEmail(input.getEmail());
@@ -57,8 +60,8 @@ public class AuthServiceImpl implements AuthService {
         response.setEmail(newUser.getEmail());
         response.setUsername(newUser.getUsername());
         response.setProvider(Provider.LOCAL);
-
-//        kafkaTemplate.send("user_registered", newUser.getEmail());
+        RegisterMessage registerMessage = new RegisterMessage(newUser.getEmail(), newUser.getId());
+        registerKafkaTemplate.send("user_registered", registerMessage);
 
         return response;
     }
@@ -123,5 +126,16 @@ public class AuthServiceImpl implements AuthService {
                 .accessToken(jwtService.generateToken(user))
                 .refreshToken(UUID.randomUUID().toString())
                 .build();
+    }
+
+    @Override
+    public boolean verifyEmail(long id) {
+        Optional<User> existingUser = userRepository.findById(id);
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            user.setActive(true);
+            return true;
+        }
+        throw new BusinessException(ErrorCode.AUTH_USER_NOT_FOUND);
     }
 }
