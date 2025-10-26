@@ -11,7 +11,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final MailService mailService;
     @Override
     public void sendVerifyRegisteredAccount(String email, long userId) {
-        String path = "http://localhost:8080/api/auth/verify-email/" + userId;
+        String path = "http://localhost:8080/api/auth/verify-email-form/" + userId;
         String text = "Đề nghị bạn hãy xác thực việc tạo tài khoản cho StayEasy bằng cách nhấn vào link sau "
                 + path;
         mailService.sendMail(email, "Xác thực tạo tài khoản cho StayEasy", text);
