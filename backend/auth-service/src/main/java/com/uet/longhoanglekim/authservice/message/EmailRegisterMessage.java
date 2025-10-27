@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class RegisterMessage {
+public class EmailRegisterMessage {
     private String email;
     private long userId;
 }

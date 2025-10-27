@@ -1,4 +1,4 @@
-package com.uet.longhoanglekim.authservice;
+package com.uet.longhoanglekim.userservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

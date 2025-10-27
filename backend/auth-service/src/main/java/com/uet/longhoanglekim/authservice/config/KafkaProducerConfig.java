@@ -1,7 +1,8 @@
 package com.uet.longhoanglekim.authservice.config;
 
 
-import com.uet.longhoanglekim.authservice.message.RegisterMessage;
+import com.uet.longhoanglekim.authservice.message.CreateProfileMessage;
+import com.uet.longhoanglekim.authservice.message.EmailRegisterMessage;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -18,13 +19,23 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, RegisterMessage> registerProducerFactory() {
+    public ProducerFactory<String, EmailRegisterMessage> emailRegisterProducerFactory() {
         return new DefaultKafkaProducerFactory<>(commonProps());
     }
 
     @Bean
-    public KafkaTemplate<String, RegisterMessage> registerKafkaTemplate() {
-        return new KafkaTemplate<>(registerProducerFactory());
+    public KafkaTemplate<String, EmailRegisterMessage> emailRegisterMessageKafkaTemplate() {
+        return new KafkaTemplate<>(emailRegisterProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, CreateProfileMessage> createProfileProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(commonProps());
+    }
+
+    @Bean
+    public KafkaTemplate<String, CreateProfileMessage> createProfileMessageKafkaTemplate() {
+        return new KafkaTemplate<>(createProfileProducerFactory());
     }
 
 

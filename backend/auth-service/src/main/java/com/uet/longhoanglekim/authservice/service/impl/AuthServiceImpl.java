@@ -1,6 +1,7 @@
 package com.uet.longhoanglekim.authservice.service.impl;
 
-import com.uet.longhoanglekim.authservice.message.RegisterMessage;
+import com.uet.longhoanglekim.authservice.message.CreateProfileMessage;
+import com.uet.longhoanglekim.authservice.message.EmailRegisterMessage;
 import com.uet.longhoanglekim.authservice.repository.UserRepository;
 import com.uet.longhoanglekim.authservice.constant.ErrorCode;
 import com.uet.longhoanglekim.authservice.constant.Provider;
@@ -28,7 +29,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final RestTemplate restTemplate;
-    private final KafkaTemplate<String, RegisterMessage> registerKafkaTemplate;
+    private final KafkaTemplate<String, EmailRegisterMessage> emailRegisterMessageKafkaTemplate;
+    private final KafkaTemplate<String, CreateProfileMessage> createProfileMessageKafkaTemplate;
     @Override
     public RegisterResponse signup( RegisterInput input) {
         Optional<User> existingOpt = userRepository.findByEmail(input.getEmail());
@@ -36,13 +38,10 @@ public class AuthServiceImpl implements AuthService {
         if (existingOpt.isPresent()) {
             User existUser = existingOpt.get();
 
-            // Nếu user này đăng ký bằng LOCAL
             if (existUser.getProvider() == Provider.LOCAL) {
                 if (!existUser.isActive()) {
-                    // Người dùng chưa xác thực email
                     throw new BusinessException(ErrorCode.AUTH_NOT_VERIFIED);
                 } else {
-                    // Email đã tồn tại và đã active
                     throw new BusinessException(ErrorCode.AUTH_EMAIL_EXISTS);
                 }
             }
@@ -53,16 +52,19 @@ public class AuthServiceImpl implements AuthService {
         newUser.setPassword(encodedPassword);
         newUser.setProvider(Provider.LOCAL);
         newUser.setActive(false);
-        newUser.setUsername(input.getUsername());
         userRepository.save(newUser);
 
         RegisterResponse response = new RegisterResponse();
         response.setEmail(newUser.getEmail());
-        response.setUsername(newUser.getUsername());
         response.setProvider(Provider.LOCAL);
-        RegisterMessage registerMessage = new RegisterMessage(newUser.getEmail(), newUser.getId());
-        registerKafkaTemplate.send("user_registered", registerMessage);
-
+        EmailRegisterMessage registerMessage = new EmailRegisterMessage(newUser.getEmail(), newUser.getId());
+        CreateProfileMessage createProfileMessage = new CreateProfileMessage();
+        createProfileMessage.setFullName(input.getFullName());
+        createProfileMessage.setGender(input.getGender());
+        createProfileMessage.setPhoneNumber(input.getPhoneNumber());
+        createProfileMessage.setDateOfBirth(input.getDateOfBirth());
+        emailRegisterMessageKafkaTemplate.send("send_mail_registered", registerMessage);
+        createProfileMessageKafkaTemplate.send("create_user_profile", createProfileMessage);
         return response;
     }
 
@@ -79,7 +81,6 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(input.getPassword(), user.getPassword())) {
             throw new BusinessException(ErrorCode.AUTH_INVALID_PASSWORD);
         }
-
         String accessToken = jwtService.generateToken(user);
         String refreshToken = UUID.randomUUID().toString();
         return LoginResponse.builder()
@@ -87,7 +88,6 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(refreshToken)
                 .build();
     }
-
 
     @Override
     public LoginResponse loginWithOauth(OAuthRequest request) {

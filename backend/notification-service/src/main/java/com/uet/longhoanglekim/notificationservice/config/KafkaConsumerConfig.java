@@ -19,33 +19,25 @@ import java.util.Map;
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConsumerFactory<String, RegisterMessage> registerConsumerFactory() {
-        // 1. Khởi tạo JsonDeserializer CỦA BẠN và cấu hình nó
-        JsonDeserializer<RegisterMessage> jsonDeserializer = new JsonDeserializer<>(RegisterMessage.class, false);
-        // Thiết lập trusted packages để giải mã đối tượng từ JSON (RẤT QUAN TRỌNG)
-        // Bạn có thể dùng tên package cụ thể hoặc "*" để tin tưởng tất cả
-        jsonDeserializer.addTrustedPackages("*");
+    public ConsumerFactory<String, RegisterMessage> sendVerifyEmailConsumerFactory() {
 
-        // 2. Cấu hình các thuộc tính Consumer
+        JsonDeserializer<RegisterMessage> jsonDeserializer = new JsonDeserializer<>(RegisterMessage.class, false);
+        jsonDeserializer.addTrustedPackages("*");
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "notification-group");
-
-        // KHÔNG CẦN định nghĩa Deserializer Class ở đây nữa, vì chúng ta sẽ cung cấp
-        // các đối tượng Deserializer đã được tạo bên dưới
-
         return new DefaultKafkaConsumerFactory<>(
                 props,
-                new StringDeserializer(), // Key Deserializer
-                jsonDeserializer          // Value Deserializer đã được cấu hình
+                new StringDeserializer(),
+                jsonDeserializer
         );
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, RegisterMessage> registerKafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, RegisterMessage> sendVerifyEmailKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, RegisterMessage> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(registerConsumerFactory());
+        factory.setConsumerFactory(sendVerifyEmailConsumerFactory());
 
         // Bạn có thể thêm cấu hình Error Handler ở đây nếu muốn tùy chỉnh lỗi
         // factory.setCommonErrorHandler(new DefaultErrorHandler(new FixedBackOff(1000L, 2L)));
