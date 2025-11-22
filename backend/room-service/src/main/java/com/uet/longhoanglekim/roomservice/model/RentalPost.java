@@ -18,21 +18,13 @@ import java.util.List;
 public class RentalPost {
     @Id
     private String id;
-
     private String roomId;          // Tham chiếu đến Room
     private String ownerId;         // Ai đăng tin (chủ trọ)
-
     private String title;
     private String description;
-
-    private double price;           // Giá cho thuê trong bài đăng
-
     private List<String> images;    // Ảnh quảng cáo
-
     private String status;      // ACTIVE, INACTIVE, EXPIRED, PENDING_APPROVAL
-
-    private int viewCount;
-
+    private int viewCounts;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime expiredAt;

@@ -7,6 +7,7 @@ import com.uet.longhoanglekim.roomservice.model.Room;
 public class RoomMapper {
     public static RoomInfoDTO toRoomInfoDTO(Room room) {
         RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
+        roomInfoDTO.setRoomId(room.getId());
         roomInfoDTO.setArea(room.getArea());
         roomInfoDTO.setDescription(room.getDescription());
         roomInfoDTO.setFeature(room.getFeature());

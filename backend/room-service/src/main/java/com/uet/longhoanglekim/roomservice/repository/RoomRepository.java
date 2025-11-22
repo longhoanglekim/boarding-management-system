@@ -3,7 +3,6 @@ package com.uet.longhoanglekim.roomservice.repository;
 import com.uet.longhoanglekim.roomservice.model.Room;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.util.List;
 import java.util.Optional;

@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomInfoDTO {
+    private String roomId;
     private Long ownerId;
     private String title;
     private String description;
