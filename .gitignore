@@ -22,6 +22,7 @@ target/
 mvnw
 mvnw.cmd
 
+**/node_modules/
 
 ### VS Code ###
 .vscode/

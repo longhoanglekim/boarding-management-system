@@ -1,0 +1,23 @@
+{
+  "name": "blockchain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "compile.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/longhoanglekim/boarding-management-system.git"
+  },
+  "private": true,
+  "dependencies": {
+    "assert": "^2.1.0",
+    "fs": "^0.0.1-security",
+    "ganache-cli": "^6.12.2",
+    "mocha": "^11.7.5",
+    "path": "^0.12.7",
+    "solc": "^0.8.30",
+    "web3": "^4.16.0"
+  }
+}

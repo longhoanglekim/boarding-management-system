@@ -4,7 +4,7 @@ spring:
     name: room-service
   data:
     mongodb:
-      uri: mongodb+srv://hlklonga5_db_user:spttiOflCUgMPuYE@my-cluster.hme2did.mongodb.net/my-cluster/room_database
+      uri: mongodb+srv://hlklonga5_db_user:spttiOflCUgMPuYE@my-cluster.hme2did.mongodb.net/my-cluster/contract_database
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,7 +16,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
-  port: 8084
+  port: 8085
 
 eureka:
   client:
@@ -28,4 +28,9 @@ eureka:
     lease-renewal-interval-in-seconds: 5
 logging:
   level:
-    com.uet.longhoanglekim.roomservice.*: debug
+    com.uet.longhoanglekim.contractservice.*: debug
+
+web3:
+  rpc-url: https://rpc.sepolia.org
+  private-key: ${WEB3_PRIVATE_KEY:}      # set in env
+  contract-address: ${STORAGE_CONTRACT_ADDRESS:}  # set after deploy

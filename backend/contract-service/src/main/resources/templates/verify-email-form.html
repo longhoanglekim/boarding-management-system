@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác thực Tài khoản</title>
+</head>
+<body onload="document.getElementById('verifyForm').submit();">
+<div style="text-align: center; margin-top: 50px;">
+    <h2>Đang xác thực tài khoản...</h2>
+    <p>Vui lòng không đóng cửa sổ này. Hệ thống đang hoàn tất quá trình xác thực.</p>
+</div>
+
+<form id="verifyForm"
+      method="POST"
+      th:action="@{'/api/auth/verify-email/' + ${id}}">
+
+    <noscript>
+        <p>JavaScript bị vô hiệu hóa. Vui lòng nhấn nút sau:</p>
+        <button type="submit">Hoàn tất Xác thực</button>
+    </noscript>
+</form>
+</body>
+</html>
