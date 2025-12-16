@@ -39,7 +39,6 @@ public class ContractServiceImpl implements ContractService {
         c.setBlockchainContractAddress(System.getenv("STORAGE_CONTRACT_ADDRESS"));
         c.setStatus(ContractStatus.ACTIVE);
         repo.save(c);
-
         CreateContractResponse resp = new CreateContractResponse();
         resp.setContractId(c.getId());
         resp.setContractHash(hash);

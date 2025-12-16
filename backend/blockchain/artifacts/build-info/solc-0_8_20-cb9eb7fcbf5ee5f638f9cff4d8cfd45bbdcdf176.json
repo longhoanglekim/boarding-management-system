@@ -1,0 +1,35 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_20-cb9eb7fcbf5ee5f638f9cff4d8cfd45bbdcdf176",
+  "solcVersion": "0.8.20",
+  "solcLongVersion": "0.8.20+commit.a1b79de6",
+  "userSourceNameMap": {
+    "contracts/RentingContract.sol": "project/contracts/RentingContract.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "shanghai",
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/RentingContract.sol": {
+        "content": "pragma solidity ^0.8.20;\r\n\r\ncontract RentingContract {\r\n    mapping(string => string) public contracts;\r\n\r\n    event ContractStored(address indexed account, string contractId);\r\n    event ContractSignedByRenter(address indexed account, string contractId);\r\n    event ContractSignedByOwner(address indexed account, string contractId);\r\n    function storeContract(\r\n        string memory contractId,\r\n        string memory contractHash\r\n    ) public {\r\n        contracts[contractId] = contractHash;\r\n        emit ContractStored(msg.sender, contractId);\r\n    }\r\n\r\n    function getContract(string memory contractId) public view returns (string memory) {\r\n        return contracts[contractId];\r\n    }\r\n}"
+      }
+    }
+  }
+}
