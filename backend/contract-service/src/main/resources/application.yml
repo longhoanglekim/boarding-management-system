@@ -1,10 +1,11 @@
 
 spring:
   application:
-    name: room-service
+    name: contract-service
   data:
     mongodb:
-      uri: mongodb+srv://hlklonga5_db_user:spttiOflCUgMPuYE@my-cluster.hme2did.mongodb.net/my-cluster/contract_database
+      uri: mongodb+srv://hlklonga5_db_user:spttiOflCUgMPuYE@my-cluster.hme2did.mongodb.net/my-cluster
+      database: contract_database
   jpa:
     hibernate:
       ddl-auto: update
@@ -30,7 +31,7 @@ logging:
   level:
     com.uet.longhoanglekim.contractservice.*: debug
 
-web3:
-  rpc-url: https://rpc.sepolia.org
-  private-key: ${WEB3_PRIVATE_KEY:}      # set in env
-  contract-address: ${STORAGE_CONTRACT_ADDRESS:}  # set after deploy
+blockchain:
+  rpc-url: ${SEPOLIA_RPC_URL}
+  private-key: ${PRIVATE_KEY}
+  account-address: ${ACCOUNT_ADDRESS}

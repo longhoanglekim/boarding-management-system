@@ -4,7 +4,8 @@ spring:
     name: room-service
   data:
     mongodb:
-      uri: mongodb+srv://hlklonga5_db_user:spttiOflCUgMPuYE@my-cluster.hme2did.mongodb.net/my-cluster/room_database
+      uri: mongodb+srv://hlklonga5_db_user:spttiOflCUgMPuYE@my-cluster.hme2did.mongodb.net/my-cluster
+      database: room_database
   jpa:
     hibernate:
       ddl-auto: update
