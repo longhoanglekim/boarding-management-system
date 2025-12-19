@@ -17,63 +17,69 @@ import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-@Slf4j
 @Service
+@Slf4j
 public class JwtService {
+
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
+    // ================== GENERATE ==================
 
     public String generateToken(User user) {
-        return generateToken(new HashMap<>(), user);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRole().name()); // ADMIN / USER / OWNER
+        return buildToken(claims, user.getEmail());
     }
 
-    public String generateToken(Map<String, Object> extraClaims, User user) {
-        return buildToken(extraClaims, user, jwtExpiration);
-    }
-
-    public long getExpirationTime() {
-        return jwtExpiration;
-    }
-
-    private String buildToken(
-            Map<String, Object> extraClaims,
-            User user,
-            long expiration
-    ) {
-        // Sử dụng Instant để đảm bảo tính đồng nhất về thời gian
+    private String buildToken(Map<String, Object> claims, String subject) {
         Instant now = Instant.now();
-        Instant expTime = now.plusMillis(expiration);
 
-
-        String jwt = Jwts
-                .builder()
-                .setClaims(extraClaims)
-                .setSubject(user.getEmail())
-                .setIssuedAt(Date.from(now)) // setIssuedAt cần Date, không phải Instant
-                .setExpiration(Date.from(expTime)) // setExpiration cần Date
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)              // email
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(now.plusMillis(jwtExpiration)))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
-        log.debug(extractExpiration(jwt).toString());
-        return jwt;
     }
 
+    // ================== EXTRACT ==================
 
+    public String extractEmail(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
 
-    private Date extractExpiration(String token) {
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
+
+    public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    public boolean isTokenValid(String token) {
+        try {
+            extractAllClaims(token);
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> resolver) {
+        return resolver.apply(extractAllClaims(token));
+    }
+
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
                 .parseClaimsJws(token)

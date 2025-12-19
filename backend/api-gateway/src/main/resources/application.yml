@@ -18,6 +18,9 @@ spring:
   application:
     name: api-gateway
 
+security:
+  jwt:
+    secret-key: ----------------------room-booking-secret-key--------------------
 eureka:
   client:
     service-url:

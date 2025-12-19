@@ -23,8 +23,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    @Value("${security.jwt.expiration-time}")
-    private long jwtExpiration;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;

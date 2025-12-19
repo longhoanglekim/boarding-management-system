@@ -11,7 +11,7 @@ import org.web3j.protocol.http.HttpService;
 import java.io.IOException;
 
 @SpringBootApplication
-public class ContractServiceCloneApplication {
+public class ContractServiceApplication {
 
     public static void main(String[] args) throws IOException {
         String contractAddress = "0x34b7cdb409784b1d2ff688f71a8d478e2f194c7d";
@@ -34,7 +34,7 @@ public class ContractServiceCloneApplication {
 
 
 
-        SpringApplication.run(ContractServiceCloneApplication.class, args);
+        SpringApplication.run(ContractServiceApplication.class, args);
     }
 
 }
