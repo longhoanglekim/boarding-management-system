@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS user_db;
 CREATE DATABASE IF NOT EXISTS user_db
 CHARACTER SET utf8mb4;
 
-USE user_service_db;
+USE user_db;
 
 CREATE TABLE user_profiles (
                                id BIGINT AUTO_INCREMENT PRIMARY KEY,

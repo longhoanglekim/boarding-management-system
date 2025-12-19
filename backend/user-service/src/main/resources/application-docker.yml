@@ -3,20 +3,25 @@ spring:
     name: user-service
 
   datasource:
-    url: jdbc:mysql://localhost:3307/user_db
+    url: jdbc:mysql://user_db:3306/user_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
     password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      initialization-fail-timeout: -1
+      connection-timeout: 30000
+      maximum-pool-size: 10
 
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.MySQLDialect  # hoặc MySQL8Dialect nếu dùng MySQL 8
     show-sql: true
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     consumer:
       group-id: user-group
       auto-offset-reset: earliest
@@ -33,10 +38,11 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://discovery-service:8761/eureka/
   instance:
     lease-renewal-interval-in-seconds: 5
 
 logging:
   level:
-    com.uet.longhoanglekim.userservice: debug
+    root: INFO                           # <-- Thêm để có log banner + starting
+    com.uet.longhoanglekim.userservice: DEBUG

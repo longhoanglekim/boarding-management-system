@@ -14,6 +14,6 @@ WORKDIR /app
 # copy file .jar đã build từ stage 1
 COPY --from=builder /app/target/*.jar app.jar
 
-EXPOSE 8080
+EXPOSE 8085
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

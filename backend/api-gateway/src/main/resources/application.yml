@@ -1,29 +1,44 @@
-
 server:
   port: 8080
 spring:
+  application:
+    name: api-gateway
   cloud:
     gateway:
       server:
         webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+
           routes:
             - id: auth-service
               uri: lb://auth-service
               predicates:
                 - Path=/api/auth/**
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
-  application:
-    name: api-gateway
 
-security:
-  jwt:
-    secret-key: ----------------------room-booking-secret-key--------------------
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    hostname: localhost
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/users/**
+
+            - id: room-service
+              uri: lb://room-service
+              predicates:
+                - Path=/api/rooms/**
+
+            - id: contract-service
+              uri: lb://contract-service
+              predicates:
+                - Path=/api/contracts/**
+
+            - id: payment-service
+              uri: lb://payment-service
+              predicates:
+                - Path=/api/payment/**
+
+            - id: notification-service
+              uri: lb://notification-service
+              predicates:
+                - Path=/api/notifications/**

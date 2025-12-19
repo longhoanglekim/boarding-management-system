@@ -3,6 +3,7 @@ package com.uet.longhoanglekim.userservice.config;
 import com.uet.longhoanglekim.userservice.message.CreateProfileMessage;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -18,38 +19,39 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfig {
 
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String bootstrapServers;
+
+    @Value("${spring.kafka.consumer.group-id:user-group}")
+    private String groupId;
+
     @Bean
-    public ConsumerFactory<String, CreateProfileMessage> createProfileMessageConsumerFactory() {
-        // 1. Khởi tạo JsonDeserializer CỦA BẠN và cấu hình nó
-        JsonDeserializer<CreateProfileMessage> jsonDeserializer = new JsonDeserializer<>(CreateProfileMessage.class, false);
-        // Thiết lập trusted packages để giải mã đối tượng từ JSON (RẤT QUAN TRỌNG)
-        // Bạn có thể dùng tên package cụ thể hoặc "*" để tin tưởng tất cả
-        jsonDeserializer.addTrustedPackages("*");
-
-        // 2. Cấu hình các thuộc tính Consumer
+    public ConsumerFactory<String, Object> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "user-group");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        props.put("spring.json.use.type.headers", false);  // <-- DÒNG NÀY: dùng string thay constant
 
-        // KHÔNG CẦN định nghĩa Deserializer Class ở đây nữa, vì chúng ta sẽ cung cấp
-        // các đối tượng Deserializer đã được tạo bên dưới
-
-        return new DefaultKafkaConsumerFactory<>(
-                props,
-                new StringDeserializer(), // Key Deserializer
-                jsonDeserializer          // Value Deserializer đã được cấu hình
-        );
+        return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, CreateProfileMessage> createProfileKafkaListenerContainerFactory() {
+    public ConsumerFactory<String, CreateProfileMessage> createProfileMessageConsumerFactory() {
+        Map<String, Object> props = new HashMap<>(consumerFactory().getConfigurationProperties());
+
+        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(CreateProfileMessage.class));
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, CreateProfileMessage>
+    createProfileKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, CreateProfileMessage> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(createProfileMessageConsumerFactory());
-
-        // Bạn có thể thêm cấu hình Error Handler ở đây nếu muốn tùy chỉnh lỗi
-        // factory.setCommonErrorHandler(new DefaultErrorHandler(new FixedBackOff(1000L, 2L)));
-
         return factory;
     }
 }

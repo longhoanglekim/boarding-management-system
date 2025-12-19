@@ -19,7 +19,7 @@ public class NotificationRecipient {
     private Long id;
 
     @Column(name = "notification_id", nullable = false)
-    private Long notificationId; // Giữ ID thay vì entity mapping
+    private Long notificationId; //
 
     @Column(name = "receiver_id", nullable = false)
     private Long receiverId;

@@ -1,0 +1,31 @@
+
+spring:
+  application:
+    name: room-service
+  data:
+    mongodb:
+      uri: mongodb+srv://hlklonga5_db_user:spttiOflCUgMPuYE@my-cluster.hme2did.mongodb.net/my-cluster
+      database: room_database
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+server:
+  port: 8084
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
+  instance:
+    lease-renewal-interval-in-seconds: 5
+logging:
+  level:
+    com.uet.longhoanglekim.roomservice.*: debug
