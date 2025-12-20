@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         newUser.setEmail(input.getEmail());
         newUser.setPassword(encodedPassword);
         newUser.setProvider(Provider.LOCAL);
-        newUser.setActive(false);
+        newUser.setActive(true);
         userRepository.save(newUser);
 
         RegisterResponse response = new RegisterResponse();

@@ -10,7 +10,7 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
   datasource:
-    url: jdbc:mysql://notification_db:3307/notification_db
+    url: jdbc:mysql://notification_db:3306/notification_db
     username: root
     password: 123456
 
