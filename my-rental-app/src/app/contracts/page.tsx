@@ -73,10 +73,14 @@ export default function ContractsPage() {
                 {contracts.map((contract) => (
                   <TableRow key={contract.id}>
                     <TableCell className="font-medium">
-                      <Link href={`/contracts/${contract.id}`} className="text-blue-600 hover:underline">
-                        {contract.id}
-                      </Link>
-                    </TableCell>
+  <Link
+    href={`/contracts/${contract.id}`}
+    className="text-blue-600 hover:underline block"
+  >
+    {contract.id}
+  </Link>
+</TableCell>
+
                     <TableCell>
                       {user?.role === "owner" ? contract.renterName : contract.roomTitle}
                     </TableCell>
