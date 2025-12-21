@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NotificationConsumer {
     private final NotificationService notificationService;
-    @KafkaListener(topics = "send_email_registered", groupId = "notification-group",
+    @KafkaListener(topics = "send_mail_registered", groupId = "notification-group",
             containerFactory = "sendVerifyEmailKafkaListenerContainerFactory")
     public void consumeRegisterMessage(RegisterMessage registerMessage) {
         notificationService.sendVerifyRegisteredAccount(registerMessage.getEmail(), registerMessage.getUserId());

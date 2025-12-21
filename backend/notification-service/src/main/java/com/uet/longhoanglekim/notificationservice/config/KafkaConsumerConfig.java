@@ -24,7 +24,7 @@ public class KafkaConsumerConfig {
         JsonDeserializer<RegisterMessage> jsonDeserializer = new JsonDeserializer<>(RegisterMessage.class, false);
         jsonDeserializer.addTrustedPackages("*");
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "notification-group");
         return new DefaultKafkaConsumerFactory<>(
                 props,
