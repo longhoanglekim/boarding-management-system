@@ -45,4 +45,4 @@ eureka:
 logging:
   level:
     root: INFO                           # <-- Thêm để có log banner + starting
-    com.uet.longhoanglekim.userservice: DEBUG
+    com.uet.longhoanglekim.userservice: INFO

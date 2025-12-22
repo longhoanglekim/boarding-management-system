@@ -1,40 +1,21 @@
 package com.uet.longhoanglekim.roomservice.service;
 
-
-import com.uet.longhoanglekim.roomservice.dto.request.UpdateRoomRequest;
 import com.uet.longhoanglekim.roomservice.model.Room;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface RoomService {
-    // Lấy tất cả phòng
-    List<Room> getAllRooms();
 
-    // Lấy phòng theo ID
-    Room getRoomById(String id);
+    List<Room> getAllActiveRooms();
 
-    // Lọc phòng theo thành phố
-    List<Room> getRoomsByCity(String city);
+    Optional<Room> getRoomById(String id);
 
-    // Lọc phòng theo phường
-    List<Room> getRoomsByWard(String ward);
+    List<Room> getRoomsByOwner(String ownerId);
 
-    // Lọc phòng theo trạng thái
-    List<Room> getRoomsByStatus(String status);
+    Room createRoom(Room room);
 
-    // Lọc phòng có diện tích tối thiểu
-    List<Room> getRoomsByMinArea(double area);
+    Optional<Room> updateRoom(String id, Room update);
 
-    // Lọc phòng theo khoảng giá
-    List<Room> getRoomsByPriceRange(double startPrice, double endPrice);
-
-    // Tạo mới phòng
-    void createRoom(Room room);
-
-    // Cập nhật phòng
-    void updateRoom(String id, UpdateRoomRequest updateRoomRequest);
-
-    // Xóa phòng
-    void deleteRoom(String id);
+    boolean deleteRoom(String id);
 }

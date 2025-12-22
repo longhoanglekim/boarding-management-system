@@ -28,7 +28,7 @@ public class Room {
     private List<String> amenities;
 
     private Location location;
-
+    private String status;
     private String ownerId;      // match FE
     private boolean isActive;
 

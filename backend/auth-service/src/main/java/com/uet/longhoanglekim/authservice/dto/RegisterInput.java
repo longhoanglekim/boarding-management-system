@@ -22,7 +22,6 @@ public class RegisterInput {
     private String email;
     @NotBlank(message = "Password k được để trống")
     private String password;
-    private Gender gender;
     private String phoneNumber;
-    private LocalDate dateOfBirth;
+    private String role;
 }

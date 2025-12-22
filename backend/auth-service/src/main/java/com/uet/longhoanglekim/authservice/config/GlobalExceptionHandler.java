@@ -19,7 +19,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleCustomException(BusinessException ex) {
         return ResponseEntity
                 .status(ex.getErrorCode().getStatus())
-                .body(ApiResponse.error(ex.getMessage()));
+                .body(
+                        ApiResponse.error(
+                                ex.getErrorCode().getCode(),
+                                ex.getErrorCode().getMessage()
+                        )
+                );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

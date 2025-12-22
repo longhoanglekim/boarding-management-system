@@ -1,5 +1,6 @@
 package com.uet.longhoanglekim.authservice.service.impl;
 
+import com.uet.longhoanglekim.authservice.constant.Role;
 import com.uet.longhoanglekim.authservice.message.CreateProfileMessage;
 import com.uet.longhoanglekim.authservice.message.EmailRegisterMessage;
 import com.uet.longhoanglekim.authservice.repository.UserRepository;
@@ -51,7 +52,12 @@ public class AuthServiceImpl implements AuthService {
         newUser.setProvider(Provider.LOCAL);
         newUser.setActive(false);
         newUser.setFullName(input.getFullName());
-        userRepository.save(newUser);
+        if (input.getRole().equalsIgnoreCase("OWNER")) {
+            newUser.setRole(Role.OWNER);
+        } else {
+            newUser.setRole(Role.RENTER);
+        }
+        newUser = userRepository.save(newUser);
 
         RegisterResponse response = new RegisterResponse();
         response.setEmail(newUser.getEmail());
@@ -59,9 +65,8 @@ public class AuthServiceImpl implements AuthService {
         EmailRegisterMessage registerMessage = new EmailRegisterMessage(newUser.getEmail(), newUser.getId());
         CreateProfileMessage createProfileMessage = new CreateProfileMessage();
         createProfileMessage.setFullName(input.getFullName());
-        createProfileMessage.setGender(input.getGender());
         createProfileMessage.setPhoneNumber(input.getPhoneNumber());
-        createProfileMessage.setDateOfBirth(input.getDateOfBirth());
+        createProfileMessage.setUserId(newUser.getId());
         emailRegisterMessageKafkaTemplate.send("send_mail_registered", registerMessage);
         createProfileMessageKafkaTemplate.send("create_user_profile", createProfileMessage);
         return response;

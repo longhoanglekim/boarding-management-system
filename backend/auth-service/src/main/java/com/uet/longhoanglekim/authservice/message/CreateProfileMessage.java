@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CreateProfileMessage {
     private String fullName;
-    private Gender gender;
-    private LocalDate dateOfBirth;
     private String phoneNumber;
+    private Long userId;
 }

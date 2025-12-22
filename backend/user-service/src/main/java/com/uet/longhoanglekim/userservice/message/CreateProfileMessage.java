@@ -12,8 +12,7 @@ import java.time.LocalDate;
 @Setter
 public class CreateProfileMessage {
     private String fullName;
-    private Gender gender;
-    private LocalDate dateOfBirth;
+    private Long userId;
     private String phoneNumber;
 }
 
