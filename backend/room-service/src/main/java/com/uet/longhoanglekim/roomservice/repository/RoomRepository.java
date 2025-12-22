@@ -7,10 +7,24 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.Optional;
 public interface RoomRepository extends MongoRepository<Room, String> {
-    Optional<Room> findById(String id);
-    List<Room> findByLocation_city(String city);
-    List<Room> findByLocation_ward(String ward);
-    List<Room> findByStatus(String status);
-    List<Room> findByAreaGreaterThanEqual(double area);
-    List<Room> findByFeature_basePriceBetween(double startPrice, double endPrice);
+    // 🔍 Lấy phòng đang active
+    List<Room> findByIsActiveTrue();
+
+    // 👤 Phòng theo chủ
+    List<Room> findByOwnerId(String ownerId);
+
+    // 👤 Phòng active theo chủ
+    List<Room> findByOwnerIdAndIsActiveTrue(String ownerId);
+
+    // 🔎 Tìm theo tỉnh
+    List<Room> findByLocation_Province(String province);
+
+    // 🔎 Tìm theo tỉnh + active
+    List<Room> findByLocation_ProvinceAndIsActiveTrue(String province);
+
+    // 💰 Lọc theo giá
+    List<Room> findByPriceBetween(double min, double max);
+
+    // ❌ Soft delete
+    long deleteByOwnerId(String ownerId);
 }

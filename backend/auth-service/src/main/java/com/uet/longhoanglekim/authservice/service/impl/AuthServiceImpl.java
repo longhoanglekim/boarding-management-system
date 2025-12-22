@@ -50,6 +50,7 @@ public class AuthServiceImpl implements AuthService {
         newUser.setPassword(encodedPassword);
         newUser.setProvider(Provider.LOCAL);
         newUser.setActive(false);
+        newUser.setFullName(input.getFullName());
         userRepository.save(newUser);
 
         RegisterResponse response = new RegisterResponse();
@@ -71,7 +72,6 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUTH_USER_NOT_FOUND));
 
-
         if (!user.isActive()) {
             throw new BusinessException(ErrorCode.AUTH_NOT_VERIFIED);
         }
@@ -79,13 +79,22 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(input.getPassword(), user.getPassword())) {
             throw new BusinessException(ErrorCode.AUTH_INVALID_PASSWORD);
         }
+
         String accessToken = jwtService.generateToken(user);
         String refreshToken = UUID.randomUUID().toString();
+
+        // ❗ fullName tạm thời
+        String fullName = user.getFullName();
+
         return LoginResponse.builder()
                 .accessToken("Bearer " + accessToken)
                 .refreshToken(refreshToken)
+                .email(user.getEmail())
+                .role(user.getRole() != null ? user.getRole().name() : "USER")
+                .fullName(fullName)
                 .build();
     }
+
 
     @Override
     public LoginResponse loginWithOauth(OAuthRequest request) {

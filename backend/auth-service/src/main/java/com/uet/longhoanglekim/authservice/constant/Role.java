@@ -1,5 +1,5 @@
 package com.uet.longhoanglekim.authservice.constant;
 
 public enum Role {
-    ADMIN, OWNER, TENTANT
+    ADMIN, OWNER, RENTER
 }

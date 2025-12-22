@@ -6,24 +6,34 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "rooms")
 public class Room {
+
     @Id
     private String id;
 
-    private Long ownerId;
     private String title;
     private String description;
-    private Location location;
-    private double area;
-    private String status; // AVAILABLE, RENTED, MAINTENANCE
 
-    private Feature feature;
+    private double price;
+    private double deposit;
+    private double area;
+
     private List<String> images;
+    private List<String> amenities;
+
+    private Location location;
+
+    private String ownerId;      // match FE
+    private boolean isActive;
 
     private long createdAt;
+
+    // optional – dùng khi join owner info
+    private Owner owner;
 }

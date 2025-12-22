@@ -11,7 +11,7 @@ CREATE TABLE users (
                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
                        email VARCHAR(100) UNIQUE,
                        password VARCHAR(255),
-                       role ENUM('ADMIN', 'OWNER', 'TENTANT') DEFAULT 'TENTANT',
+                       role ENUM('ADMIN', 'OWNER', 'RENTER') DEFAULT 'RENTER',
                        provider ENUM('LOCAL', 'GMAIL', 'FACEBOOK') NOT NULL,
                        provider_user_id VARCHAR(255),
                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

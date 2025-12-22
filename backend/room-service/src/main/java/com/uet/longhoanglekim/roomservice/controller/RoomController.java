@@ -1,97 +1,93 @@
 package com.uet.longhoanglekim.roomservice.controller;
 
 import com.uet.longhoanglekim.roomservice.config.ApiResponse;
-import com.uet.longhoanglekim.roomservice.dto.request.CreateRoomRequest;
-import com.uet.longhoanglekim.roomservice.dto.request.UpdateRoomRequest;
-import com.uet.longhoanglekim.roomservice.mappers.RoomMapper;
 import com.uet.longhoanglekim.roomservice.model.Room;
-import com.uet.longhoanglekim.roomservice.service.RoomService;
+import com.uet.longhoanglekim.roomservice.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/rooms")
 @RequiredArgsConstructor
 public class RoomController {
-    private final RoomService roomService;
 
-    // ===========================
-    //        GET LIST
-    // ===========================
+    private final RoomRepository roomRepository;
 
-    @GetMapping
-    public ApiResponse<?> getAll() {
-        return ApiResponse.success(roomService.getAllRooms(), "Get all rooms successfully");
+    // ✅ GET all active rooms
+    @GetMapping("/public/active")
+    public ApiResponse<List<Room>> getAllActiveRooms() {
+        return ApiResponse.success(
+                roomRepository.findByIsActiveTrue(),
+                "Get active rooms successfully"
+        );
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<?> getById(@PathVariable String id) {
-        Room room = roomService.getRoomById(id);
-        return ApiResponse.success(RoomMapper.toRoomInfoDTO(room),"Get room by id successfully");
+    // ✅ GET room by id
+    @GetMapping("/public/{id}")
+    public ApiResponse<?> getRoomById(@PathVariable String id) {
+        return roomRepository.findById(id)
+                .map(room -> ApiResponse.success(room, "Get room successfully"))
+                .orElse(ApiResponse.error("Room not found"));
     }
 
-    @GetMapping("/city/{city}")
-    public ApiResponse<?> getByCity(@PathVariable String city) {
-        return ApiResponse.success(roomService.getRoomsByCity(city), "Get rooms by city successfully");
+    // ✅ GET rooms by owner
+    @GetMapping("/public/owner/{ownerId}")
+    public ApiResponse<List<Room>> getRoomsByOwner(@PathVariable String ownerId) {
+        return ApiResponse.success(
+                roomRepository.findByOwnerId(ownerId),
+                "Get rooms by owner successfully"
+        );
     }
 
-    @GetMapping("/ward/{ward}")
-    public ApiResponse<?> getByWard(@PathVariable String ward) {
-        return ApiResponse.success(roomService.getRoomsByWard(ward),  "Get rooms by ward successfully");
-    }
-
-    @GetMapping("/status/{status}")
-    public ApiResponse<List<Room>> getByStatus(@PathVariable String status) {
-        return ApiResponse.success(roomService.getRoomsByStatus(status), "Get rooms by status successfully");
-    }
-
-    @GetMapping("/area/{area}")
-    public ApiResponse<List<Room>> getByMinArea(@PathVariable double area) {
-        return ApiResponse.success(roomService.getRoomsByMinArea(area),  "Get rooms by area successfully");
-    }
-
-    @GetMapping("/price")
-    public ApiResponse<List<Room>> getByPriceRange(
-            @RequestParam double start,
-            @RequestParam double end
-    ) {
-        return ApiResponse.success(roomService.getRoomsByPriceRange(start, end),  "Get rooms by price range successfully");
-    }
-
-    // ===========================
-    //         CREATE
-    // ===========================
-
+    // ✅ CREATE room
     @PostMapping
-    public ApiResponse<?> create(@RequestBody CreateRoomRequest request) {
-        Room room = RoomMapper.toRoom(request);
-        roomService.createRoom(room);
+    public ApiResponse<Room> createRoom(@RequestBody Room room) {
+        room.setActive(true);
+        room.setCreatedAt(System.currentTimeMillis());
 
-        return ApiResponse.success(true,"Create room successfully");
+        return ApiResponse.success(
+                roomRepository.save(room),
+                "Create room successfully"
+        );
     }
 
-    // ===========================
-    //         UPDATE
-    // ===========================
-
+    // ✅ UPDATE room
     @PutMapping("/{id}")
-    public ApiResponse<?> update(
+    public ApiResponse<?> updateRoom(
             @PathVariable String id,
-            @RequestBody UpdateRoomRequest request
+            @RequestBody Room update
     ) {
-        roomService.updateRoom(id, request);
-        return ApiResponse.success(true,"Room updated");
+        return roomRepository.findById(id)
+                .map(room -> {
+                    room.setTitle(update.getTitle());
+                    room.setDescription(update.getDescription());
+                    room.setPrice(update.getPrice());
+                    room.setDeposit(update.getDeposit());
+                    room.setArea(update.getArea());
+                    room.setImages(update.getImages());
+                    room.setAmenities(update.getAmenities());
+                    room.setLocation(update.getLocation());
+                    room.setActive(update.isActive());
+
+                    return ApiResponse.success(
+                            roomRepository.save(room),
+                            "Update room successfully"
+                    );
+                })
+                .orElse(ApiResponse.error("Room not found"));
     }
 
-    // ===========================
-    //         DELETE
-    // ===========================
-
+    // ✅ SOFT DELETE room
     @DeleteMapping("/{id}")
-    public ApiResponse<?> delete(@PathVariable String id) {
-        roomService.deleteRoom(id);
-        return ApiResponse.success(true, "Room deleted");
+    public ApiResponse<?> deleteRoom(@PathVariable String id) {
+        return roomRepository.findById(id)
+                .map(room -> {
+                    room.setActive(false);
+                    roomRepository.save(room);
+                    return ApiResponse.success(null, "Delete room successfully");
+                })
+                .orElse(ApiResponse.error("Room not found"));
     }
 }
