@@ -28,10 +28,7 @@ export default function LoginPage() {
       toast.success("Đăng nhập thành công! Đang chuyển đến Dashboard...");
       // Redirect về Dashboard sau khi login thành công
       router.push("/dashboard");
-    } else {
-      toast.error("Đăng nhập thất bại. Vui lòng thử lại.");
     }
-
     setLoading(false);
   };
 

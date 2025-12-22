@@ -40,7 +40,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, password }),
       });
 
-      if (!res.ok) throw new Error("Login failed");
+      if (!res.ok) {  
+         if (res.status === 400) {
+          toast.error("Tài khoản không tồn tại");
+          return false;
+        }
+
+        if (res.status === 423) {
+          toast.error("Tài khoản chưa được xác thực.");
+          return false;
+        }
+        if (res.status === 401) {
+           toast.error("Sai mật khẩu.");
+          return false;
+        }
+        toast.error("Server bị lỗi. Vui lòng dăng nhập sau.")
+        return false;
+      }
 
       const result = await res.json();
       const data = result.data;
@@ -59,20 +75,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast.success("Đăng nhập thành công!");
       return true;
     } catch (error) {
-      console.error("Login API failed, fallback to fake user", error);
-
-      // 🔥 FALLBACK khi backend chết
-      setUser({
-        id: "1",
-        email,
-        fullName : email.split("@")[0],
-        role: password.includes("owner") ? "owner" : "renter",
-        isActive: true,
-        createdAt: new Date().toISOString(),
-      });
-
-      toast.warning("Backend lỗi – dùng dữ liệu giả để demo");
-      return true;
+      
+      toast.error("Server bị lỗi. Vui lòng dăng nhập sau.")
+      return false;
     }
   };
 

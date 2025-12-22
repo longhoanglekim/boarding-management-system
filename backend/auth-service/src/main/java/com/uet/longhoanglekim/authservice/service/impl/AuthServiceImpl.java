@@ -146,6 +146,7 @@ public class AuthServiceImpl implements AuthService {
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             user.setActive(true);
+            userRepository.save(user);
             return true;
         }
         throw new BusinessException(ErrorCode.AUTH_USER_NOT_FOUND);
