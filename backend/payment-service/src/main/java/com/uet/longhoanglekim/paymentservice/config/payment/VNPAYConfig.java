@@ -30,6 +30,8 @@ public class VNPAYConfig {
     private String vnp_Command;
     @Value("${payment.vnPay.orderType}")
     private String orderType;
+    @Value("${payment.vnPay.ipnUrl}")
+    private String vnp_IpnUrl;
 
     public Map<String, String> getVNPayConfig() {
         Map<String, String> vnpParamsMap = new HashMap<>();
@@ -42,12 +44,14 @@ public class VNPAYConfig {
         vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang:" +  vnp_TxnRef);
         vnpParamsMap.put("vnp_OrderType", this.orderType);
         vnpParamsMap.put("vnp_Locale", "vn");
+//        vnpParamsMap.put("vnp_IpnUrl", this.vnp_IpnUrl);
         vnpParamsMap.put("vnp_ReturnUrl", this.vnp_ReturnUrl);
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnpCreateDate = formatter.format(calendar.getTime());
         vnpParamsMap.put("vnp_CreateDate", vnpCreateDate);
-        calendar.add(Calendar.MINUTE, 15);
+        calendar.add(Calendar.MINUTE, 15); // ← SỬA THÀNH DÒNG DƯỚI
+        calendar.add(Calendar.HOUR, 24); // ← 24 giờ hết hạn, demo thoải mái
         String vnp_ExpireDate = formatter.format(calendar.getTime());
         vnpParamsMap.put("vnp_ExpireDate", vnp_ExpireDate);
         return vnpParamsMap;

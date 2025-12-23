@@ -24,51 +24,52 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        String path = exchange.getRequest().getURI().getPath();
-
-        // ✅ FREE PASS
-        if (path.contains("/api/auth") || path.contains("/public")) {
-            return chain.filter(exchange);
-        }
-
-        // ❌ Không có Authorization header
-        if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }
-
-        String authHeader = exchange.getRequest()
-                .getHeaders()
-                .getFirst(HttpHeaders.AUTHORIZATION);
-
-        // ❌ Sai format
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }
-
-        String token = authHeader.substring(7);
-
-        try {
-            // ✅ Validate token
-            jwtUtil.isTokenValid(token);
-
-            // (Optional) Forward info xuống service phía sau
-            ServerHttpRequest mutatedRequest = exchange.getRequest()
-                    .mutate()
-                    .header("X-User-Email", jwtUtil.extractEmail(token))
-                    .header("X-User-Role", jwtUtil.extractRole(token))
-                    .build();
-
-            return chain.filter(exchange.mutate().request(mutatedRequest).build());
-
-        } catch (ExpiredJwtException e) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        } catch (Exception e) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }
+//        String path = exchange.getRequest().getURI().getPath();
+//
+//        // ✅ FREE PASS
+//        if (path.contains("/api/auth") || path.contains("/public")) {
+//            return chain.filter(exchange);
+//        }
+//
+//        // ❌ Không có Authorization header
+//        if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+//            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+//            return exchange.getResponse().setComplete();
+//        }
+//
+//        String authHeader = exchange.getRequest()
+//                .getHeaders()
+//                .getFirst(HttpHeaders.AUTHORIZATION);
+//
+//        // ❌ Sai format
+//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+//            return exchange.getResponse().setComplete();
+//        }
+//
+//        String token = authHeader.substring(7);
+//
+//        try {
+//            // ✅ Validate token
+//            jwtUtil.isTokenValid(token);
+//
+//            // (Optional) Forward info xuống service phía sau
+//            ServerHttpRequest mutatedRequest = exchange.getRequest()
+//                    .mutate()
+//                    .header("X-User-Email", jwtUtil.extractEmail(token))
+//                    .header("X-User-Role", jwtUtil.extractRole(token))
+//                    .build();
+//
+//            return chain.filter(exchange.mutate().request(mutatedRequest).build());
+//
+//        } catch (ExpiredJwtException e) {
+//            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+//            return exchange.getResponse().setComplete();
+//        } catch (Exception e) {
+//            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+//            return exchange.getResponse().setComplete();
+//        }
+        return chain.filter(exchange);
     }
 
     @Override

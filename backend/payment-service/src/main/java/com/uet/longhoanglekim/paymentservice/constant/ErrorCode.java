@@ -14,7 +14,7 @@ public enum ErrorCode {
     // === SYSTEM COMMON ERRORS ===
     INTERNAL_SERVER_ERROR("SYS_001", "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),
     BAD_REQUEST("SYS_002", "Bad request", HttpStatus.BAD_REQUEST),
-    AUTH_PROVIDER_NOT_SUPPORTED("SYS_003", "Provider not supported" , HttpStatus.UNSUPPORTED_MEDIA_TYPE ),;
+    AUTH_PROVIDER_NOT_SUPPORTED("SYS_003", "Provider not supported" , HttpStatus.UNSUPPORTED_MEDIA_TYPE ),INVALID_SIGNATURE("PAY_001", "Invalid signature" , HttpStatus.BAD_REQUEST),;
 
 
     private final String code;

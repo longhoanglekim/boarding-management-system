@@ -68,4 +68,20 @@ public class VNPayUtil {
                                         , StandardCharsets.US_ASCII))
                 .collect(Collectors.joining("&"));
     }
+    public static boolean verifySignature(
+            Map<String, String> params,
+            String secretKey,
+            String vnpSecureHash
+    ) {
+        // Remove secure hash fields
+        params.remove("vnp_SecureHash");
+        params.remove("vnp_SecureHashType");
+
+        // Build hash data
+        String hashData = getPaymentURL(params, false);
+
+        String calculatedHash = hmacSHA512(secretKey, hashData);
+        return calculatedHash.equalsIgnoreCase(vnpSecureHash);
+    }
+
 }

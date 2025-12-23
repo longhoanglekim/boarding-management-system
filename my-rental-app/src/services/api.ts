@@ -92,11 +92,11 @@ const mockContracts: Contract[] = [
 const mockNotifications: Notification[] = [
   {
     id: "1",
-    title: "Hợp đồng mới",
-    message: "Người thuê Trần Thị B đã ký hợp đồng HD001 cho phòng 'Phòng trọ cao cấp Quận 7'",
-    type: "success",
+    title: "Có người liên hệ",
+    message: "Người thuê Hoàng Lê Kim Long gửi yêu cầu thuê về phòng 'Phòng trọ cao cấp Quận 7'",
+    type: "info",
     read: false,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 3600000).toISOString(),
   },
   {
     id: "2",
